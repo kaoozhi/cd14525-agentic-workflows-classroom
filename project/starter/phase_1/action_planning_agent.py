@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path="../../tests/.env")
 # TODO: 2 - Load environment variables and define the openai_api_key variable with your OpenAI API key
-openai_api_key = os.getenv("DEEPSEEK_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 knowledge = """
 # Fried Egg

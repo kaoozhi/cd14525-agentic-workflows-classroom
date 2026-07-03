@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv(dotenv_path="../../tests/.env")
 
-openai_api_key = os.getenv("DEEPSEEK_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
 prompt = "What is the capital of France?"
 
 # Parameters for the Knowledge Agent

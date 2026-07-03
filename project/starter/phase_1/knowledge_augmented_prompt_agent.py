@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="../../tests/.env")
 
 # Define the parameters for the agent
-openai_api_key = os.getenv("DEEPSEEK_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 prompt = "What is the capital of Frane?"
 

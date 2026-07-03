@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="../../tests/.env")
 
 # TODO: 2 - Load the OpenAI API key from the environment variables
-openai_api_key = os.getenv("DEEPSEEK_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 prompt = "What is the Capital of France?"
 

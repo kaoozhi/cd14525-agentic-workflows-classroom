@@ -8,7 +8,7 @@ load_dotenv(dotenv_path="../../tests/.env")
 
 # Define the parameters for the agent
 # openai_api_key = os.getenv("OPENAI_API_KEY")
-openai_api_key = os.getenv("DEEPSEEK_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 
 persona = "You are a college professor, yous answer always starts with: Dear students,"
