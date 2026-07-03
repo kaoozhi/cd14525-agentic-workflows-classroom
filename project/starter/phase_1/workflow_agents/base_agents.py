@@ -120,7 +120,7 @@ class RAGKnowledgePromptAgent:
         self.openai_api_key = openai_api_key
         self.unique_filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.csv"
         if RAGKnowledgePromptAgent._embedding_model is None:
-            RAGKnowledgePromptAgent._embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+            RAGKnowledgePromptAgent._embedding_model = SentenceTransformer("intfloat/e5-small-v2")
 
     def get_embedding(self, text):
         """
@@ -223,9 +223,12 @@ class RAGKnowledgePromptAgent:
 
         best_chunk = df.loc[df['similarity'].idxmax(), 'text']
 
-        client = OpenAI(base_url="https://openai.vocareum.com/v1", api_key=self.openai_api_key)
+        # client = OpenAI(base_url="https://openai.vocareum.com/v1", api_key=self.openai_api_key)
+        client = OpenAI(base_url = os.getenv("BASE_URL"),
+                        api_key=self.openai_api_key)
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            # model="gpt-3.5-turbo",
+            model = os.getenv("FOUNDATION_MODEL"),
             messages=[
                 {"role": "system", "content": f"You are {self.persona}, a knowledge-based assistant. Forget previous context."},
                 {"role": "user", "content": f"Answer based only on this information: {best_chunk}. Prompt: {prompt}"}
@@ -356,23 +359,37 @@ class RoutingAgent():
         return best_agent["func"](user_input)
 
 
-'''
 class ActionPlanningAgent:
 
     def __init__(self, openai_api_key, knowledge):
         # TODO: 1 - Initialize the agent attributes here
+        self.openai_api_key = openai_api_key
+        self.knowledge = knowledge
 
     def extract_steps_from_prompt(self, prompt):
 
         # TODO: 2 - Instantiate the OpenAI client using the provided API key
+        client = OpenAI(base_url = os.getenv("BASE_URL"),
+                        api_key=self.openai_api_key)
         # TODO: 3 - Call the OpenAI API to get a response from the "gpt-3.5-turbo" model.
         # Provide the following system prompt along with the user's prompt:
         # "You are an action planning agent. Using your knowledge, you extract from the user prompt the steps requested to complete the action the user is asking for. You return the steps as a list. Only return the steps in your knowledge. Forget any previous context. This is your knowledge: {pass the knowledge here}"
-
-        response_text = ""  # TODO: 4 - Extract the response text from the OpenAI API response
+        system_prompt = f"""
+        "You are an action planning agent. Using your knowledge, you extract from the user prompt the steps requested to complete the action the user is asking for. 
+        You return the steps as a list. Only return the steps in your knowledge. Forget any previous context. This is your knowledge: {self.knowledge}"
+        """
+        response = client.chat.completions.create(
+                # model="gpt-3.5-turbo",
+                model = os.getenv("FOUNDATION_MODEL"),
+                messages=[{"role": "system", "content": system_prompt},
+                          {"role": "user", "content": prompt}
+                ], #5 - Define the message structure sent to the LLM for evaluation (use temperature=0)
+                temperature = 0
+            )
+        response_text = response.choices[0].message.content.strip() # TODO: 4 - Extract the response text from the OpenAI API response
 
         # TODO: 5 - Clean and format the extracted steps by removing empty lines and unwanted text
-        steps = response_text.split("\n")
+        # steps = response_text.split("\n")
+        steps = [line.strip() for line in response_text.split("\n") if line.strip()]
 
         return steps
-'''
