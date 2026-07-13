@@ -123,18 +123,15 @@ routing_agent.agents = [
 #   3. Have the response evaluated by the corresponding Evaluation Agent.
 #   4. Return the final validated response.
 def product_manager_support_function(query):
-    response = product_manager_knowledge_agent.respond(query)
-    evaluation = product_manager_eval_agent.evaluate(response)
+    evaluation = product_manager_eval_agent.evaluate(query)
     return evaluation["final_response"]
 
 def program_manager_support_function(query):
-    response = program_manager_knowledge_agent.respond(query)
-    evaluation = program_manager_eval_agent.evaluate(response)
+    evaluation = program_manager_eval_agent.evaluate(query)
     return evaluation["final_response"]
 
 def development_engineer_support_function(query):
-    response = development_engineer_knowledge_agent.respond(query)
-    evaluation = dev_engineer_eval_agent.evaluate(response)
+    evaluation = dev_engineer_eval_agent.evaluate(query)
     return evaluation["final_response"]
 
 
