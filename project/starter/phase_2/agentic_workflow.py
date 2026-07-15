@@ -86,13 +86,12 @@ persona_dev_engineer_eval = "You are an strict evaluation agent that checks if t
 # For the 'agent_to_evaluate' parameter, refer to the provided solution code's pattern.
 
 dev_engineer_eval_criteria = (
-"The answer should be tasks following this exact structure: " \
-"Task ID: A unique identifier for tracking purposes\n" \
-"Task Title: Brief description of the specific development work\n" \
-"Related User Story: Reference to the parent user story\n" \
-"Description: Detailed explanation of the technical work required\n" \
-"Acceptance Criteria: Specific requirements that must be met for completion\n" \
-"Estimated Effort: Time or complexity estimation\n" )
+    "The answer must list tasks where each task explicitly uses ALL of these labeled fields in this order: "
+    "Task ID: <unique identifier>, Task Title: <brief title>, Related User Story: <reference>, "
+    "Description: <technical detail>, Acceptance Criteria: <completion requirements>, Estimated Effort: <time estimate>. "
+    "Reject any response that uses plain numbered lists or bullet points without these exact field labels. "
+    "Reject any response that does not define at least one complete task with all six labeled fields."
+)
 
 dev_engineer_eval_agent = EvaluationAgent(openai_api_key, persona_dev_engineer_eval, dev_engineer_eval_criteria, development_engineer_knowledge_agent, 5)
 # Routing Agent
