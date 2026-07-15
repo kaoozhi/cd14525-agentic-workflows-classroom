@@ -239,7 +239,7 @@ class RAGKnowledgePromptAgent:
 
 class EvaluationAgent:
     
-    def __init__(self, openai_api_key, persona, evaluation_criteria, worker_agent, max_interactions):
+    def __init__(self, openai_api_key, persona, evaluation_criteria, worker_agent, max_interactions, required_fields=None):
         # Initialize the EvaluationAgent with given attributes.
         # TODO: 1 - Declare class attributes here
         self.openai_api_key = openai_api_key
@@ -247,6 +247,7 @@ class EvaluationAgent:
         self.max_interactions = max_interactions
         self.evaluation_criteria = evaluation_criteria
         self.worker_agent = worker_agent
+        self.required_fields = required_fields or []
 
     def evaluate(self, initial_prompt):
         # This method manages interactions between agents to achieve a solution.
@@ -286,6 +287,10 @@ class EvaluationAgent:
             iterations += 1
             print(" Step 3: Check if evaluation is positive")
             verdict_line = next((line for line in evaluation.splitlines() if line.strip().upper().startswith("VERDICT:")), "")
+            missing_fields = [f for f in self.required_fields if f not in response_from_worker]
+            if "YES" in verdict_line.upper() and missing_fields:
+                evaluation = f"VERDICT: NO\nREASON: Response is missing required labeled fields: {', '.join(missing_fields)}"
+                verdict_line = "VERDICT: NO"
             if "YES" in verdict_line.upper():
                 print("✅ Final solution accepted.")
                 break

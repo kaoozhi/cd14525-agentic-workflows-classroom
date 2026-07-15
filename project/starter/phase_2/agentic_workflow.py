@@ -69,7 +69,8 @@ program_manager_eval_criteria = (
     "Reject any response that does not define at least one complete feature with all four labeled fields."
 )
 
-program_manager_eval_agent = EvaluationAgent(openai_api_key, persona_program_manager_eval, program_manager_eval_criteria, program_manager_knowledge_agent, 5)
+program_manager_eval_agent = EvaluationAgent(openai_api_key, persona_program_manager_eval, program_manager_eval_criteria, program_manager_knowledge_agent, 5,
+    required_fields=["Feature Name:", "Description:", "Key Functionality:", "User Benefit:"])
 
 # Development Engineer - Knowledge Augmented Prompt Agent
 persona_dev_engineer = "You are a Development Engineer, you are responsible for defining the development tasks for a product."
@@ -93,7 +94,8 @@ dev_engineer_eval_criteria = (
     "Reject any response that does not define at least one complete task with all six labeled fields."
 )
 
-dev_engineer_eval_agent = EvaluationAgent(openai_api_key, persona_dev_engineer_eval, dev_engineer_eval_criteria, development_engineer_knowledge_agent, 5)
+dev_engineer_eval_agent = EvaluationAgent(openai_api_key, persona_dev_engineer_eval, dev_engineer_eval_criteria, development_engineer_knowledge_agent, 5,
+    required_fields=["Task ID:", "Task Title:", "Related User Story:", "Description:", "Acceptance Criteria:", "Estimated Effort:"])
 # Routing Agent
 # TODO: 10 - Instantiate a routing_agent. You will need to define a list of agent dictionaries (routes) for Product Manager, Program Manager, and Development Engineer. Each dictionary should contain 'name', 'description', and 'func' (linking to a support function). Assign this list to the routing_agent's 'agents' attribute.
 routing_agent = RoutingAgent(openai_api_key, {})
