@@ -339,7 +339,7 @@ class RoutingAgent():
         return response.data[0].embedding
 
     # TODO: 3 - Define a method to route user prompts to the appropriate agent
-    def route(self, user_input):
+    def route(self, user_input, payload=None):
         # TODO: 4 - Compute the embedding of the user input prompt
         input_emb = self.get_embedding(user_input)
         best_agent = None
@@ -364,7 +364,8 @@ class RoutingAgent():
             return "Sorry, no suitable agent could be selected."
 
         print(f"[Router] Best agent: {best_agent['name']} (score={best_score:.3f})")
-        return best_agent["func"](user_input)
+        execution_input = payload if payload is not None else user_input
+        return best_agent["func"](execution_input)
 
 
 class ActionPlanningAgent:

@@ -63,11 +63,11 @@ persona_program_manager_eval = "You are an strict evaluation agent that checks i
                     #  "User Benefit: How this feature creates value for the user"
 # For the 'agent_to_evaluate' parameter, refer to the provided solution code's pattern.
 program_manager_eval_criteria = (
-    "The answer should be product features that follow the following structure: " \
-    "Feature Name: A clear, concise title that identifies the capability\n" \
-    "Description: A brief explanation of what the feature does and its purpose\n" \
-    "Key Functionality: The specific capabilities or actions the feature provides\n" \
-    "User Benefit: How this feature creates value for the user")
+    "The answer must list product features where each feature explicitly uses ALL of these labeled fields in this order: "
+    "Feature Name: <title>, Description: <explanation>, Key Functionality: <capabilities>, User Benefit: <value>. "
+    "Reject any response that uses bullet points or numbered lists without these exact field labels. "
+    "Reject any response that does not define at least one complete feature with all four labeled fields."
+)
 
 program_manager_eval_agent = EvaluationAgent(openai_api_key, persona_program_manager_eval, program_manager_eval_criteria, program_manager_knowledge_agent, 5)
 
@@ -163,7 +163,7 @@ for i, step in enumerate(workflow_steps, start=1):
         current_step_prompt = f"{step} Context: {response_from_prev_step}"
     else:
         current_step_prompt = f"{step}"
-    response_from_prev_step = routing_agent.route(current_step_prompt)
+    response_from_prev_step = routing_agent.route(step, payload=current_step_prompt)
     completed_steps.append(response_from_prev_step)
     print(f"\n=== Result: {response_from_prev_step}")
 
