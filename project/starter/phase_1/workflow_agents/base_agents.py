@@ -239,7 +239,7 @@ class RAGKnowledgePromptAgent:
 
 class EvaluationAgent:
     
-    def __init__(self, openai_api_key, persona, evaluation_criteria, worker_agent, max_interactions):
+    def __init__(self, openai_api_key, persona, evaluation_criteria, worker_agent, max_interactions, required_fields=None):
         # Initialize the EvaluationAgent with given attributes.
         # TODO: 1 - Declare class attributes here
         self.openai_api_key = openai_api_key
@@ -247,6 +247,7 @@ class EvaluationAgent:
         self.max_interactions = max_interactions
         self.evaluation_criteria = evaluation_criteria
         self.worker_agent = worker_agent
+        self.required_fields = required_fields or []
 
     def evaluate(self, initial_prompt):
         # This method manages interactions between agents to achieve a solution.
@@ -286,6 +287,10 @@ class EvaluationAgent:
             iterations += 1
             print(" Step 3: Check if evaluation is positive")
             verdict_line = next((line for line in evaluation.splitlines() if line.strip().upper().startswith("VERDICT:")), "")
+            missing_fields = [f for f in self.required_fields if f not in response_from_worker]
+            if "YES" in verdict_line.upper() and missing_fields:
+                evaluation = f"VERDICT: NO\nREASON: Response is missing required labeled fields: {', '.join(missing_fields)}"
+                verdict_line = "VERDICT: NO"
             if "YES" in verdict_line.upper():
                 print("✅ Final solution accepted.")
                 break
@@ -339,7 +344,7 @@ class RoutingAgent():
         return response.data[0].embedding
 
     # TODO: 3 - Define a method to route user prompts to the appropriate agent
-    def route(self, user_input):
+    def route(self, user_input, payload=None):
         # TODO: 4 - Compute the embedding of the user input prompt
         input_emb = self.get_embedding(user_input)
         best_agent = None
@@ -364,7 +369,8 @@ class RoutingAgent():
             return "Sorry, no suitable agent could be selected."
 
         print(f"[Router] Best agent: {best_agent['name']} (score={best_score:.3f})")
-        return best_agent["func"](user_input)
+        execution_input = payload if payload is not None else user_input
+        return best_agent["func"](execution_input)
 
 
 class ActionPlanningAgent:
