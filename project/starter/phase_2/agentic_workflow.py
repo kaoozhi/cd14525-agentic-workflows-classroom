@@ -42,7 +42,7 @@ product_manager_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, 
 # Product Manager - Evaluation Agent
 # TODO: 7 - Define the persona and evaluation criteria for a Product Manager evaluation agent and instantiate it as product_manager_evaluation_agent. This agent will evaluate the product_manager_knowledge_agent.
 # The evaluation_criteria should specify the expected structure for user stories (e.g., "As a [type of user], I want [an action or feature] so that [benefit/value].").
-persona_product_manager_eval = "You are an evaluation agent that checks the answer of other worker agents"
+persona_product_manager_eval = "You are an strict evaluation agent that checks if the answers of other worker agents follow strictly the evaluation criteria."
 product_manager_eval_criteria = "The answer should be stories that follow the following structure: As a [type of user], I want [an action or feature] so that [benefit/value]."
 product_manager_eval_agent = EvaluationAgent(openai_api_key, persona_product_manager_eval, product_manager_eval_criteria, product_manager_knowledge_agent, 5)
 
@@ -53,7 +53,7 @@ knowledge_program_manager = "Features of a product are defined by organizing sim
 # (This is a necessary step before TODO 8. Students should add the instantiation code here.)
 program_manager_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona_program_manager, knowledge_program_manager)
 # Program Manager - Evaluation Agent
-persona_program_manager_eval = "You are an evaluation agent that checks the answers of other worker agents."
+persona_program_manager_eval = "You are an strict evaluation agent that checks if the answers of other worker agents follow strictly the evaluation criteria."
 
 # TODO: 8 - Instantiate a program_manager_evaluation_agent using 'persona_program_manager_eval' and the evaluation criteria below.
                     #  "The answer should be product features that follow the following structure: " \
@@ -79,7 +79,7 @@ knowledge_dev_engineer = "Development tasks are defined by identifying what need
 development_engineer_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona_dev_engineer, knowledge_dev_engineer)
 
 # Development Engineer - Evaluation Agent
-persona_dev_engineer_eval = "You are an evaluation agent that checks the answers of other worker agents."
+persona_dev_engineer_eval = "You are an strict evaluation agent that checks if the answers of other worker agents follow strictly the evaluation criteria."
 # TODO: 9 - Instantiate a development_engineer_evaluation_agent using 'persona_dev_engineer_eval' and the evaluation criteria below.
 
 #                      "Dependencies: Any tasks that must be completed first"
