@@ -74,7 +74,17 @@ program_manager_eval_agent = EvaluationAgent(openai_api_key, persona_program_man
 
 # Development Engineer - Knowledge Augmented Prompt Agent
 persona_dev_engineer = "You are a Development Engineer, you are responsible for defining the development tasks for a product."
-knowledge_dev_engineer = "Development tasks are defined by identifying what needs to be built to implement each user story."
+knowledge_dev_engineer = (
+    "Development tasks are defined by identifying what needs to be built to implement each feature. "
+    "You must define tasks for ALL features listed in the input, not just the first one. "
+    "For each feature, define multiple tasks using EXACTLY this labeled format:\n"
+    "Task ID: <unique identifier e.g. T1.1>\n"
+    "Task Title: <brief title of the work>\n"
+    "Related User Story: <which feature or story this implements>\n"
+    "Description: <detailed technical description of what to build>\n"
+    "Acceptance Criteria: <specific conditions that must be met>\n"
+    "Estimated Effort: <time estimate e.g. 3 days>\n"
+)
 # Instantiate a development_engineer_knowledge_agent using 'persona_dev_engineer' and 'knowledge_dev_engineer'
 # (This is a necessary step before TODO 9. Students should add the instantiation code here.)
 development_engineer_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona_dev_engineer, knowledge_dev_engineer)
