@@ -42,7 +42,7 @@ product_manager_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, 
 # Product Manager - Evaluation Agent
 # TODO: 7 - Define the persona and evaluation criteria for a Product Manager evaluation agent and instantiate it as product_manager_evaluation_agent. This agent will evaluate the product_manager_knowledge_agent.
 # The evaluation_criteria should specify the expected structure for user stories (e.g., "As a [type of user], I want [an action or feature] so that [benefit/value].").
-persona_product_manager_eval = "You are an strict evaluation agent that checks if the answers of other worker agents follow strictly the evaluation criteria."
+persona_product_manager_eval = "You are an evaluation agent that checks the answers of other worker agents."
 product_manager_eval_criteria = "The answer should be stories that follow the following structure: As a [type of user], I want [an action or feature] so that [benefit/value]."
 product_manager_eval_agent = EvaluationAgent(openai_api_key, persona_product_manager_eval, product_manager_eval_criteria, product_manager_knowledge_agent, 5)
 
@@ -53,7 +53,7 @@ knowledge_program_manager = "Features of a product are defined by organizing sim
 # (This is a necessary step before TODO 8. Students should add the instantiation code here.)
 program_manager_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona_program_manager, knowledge_program_manager)
 # Program Manager - Evaluation Agent
-persona_program_manager_eval = "You are an strict evaluation agent that checks if the answers of other worker agents follow strictly the evaluation criteria."
+persona_program_manager_eval = "You are an evaluation agent that checks the answers of other worker agents"
 
 # TODO: 8 - Instantiate a program_manager_evaluation_agent using 'persona_program_manager_eval' and the evaluation criteria below.
                     #  "The answer should be product features that follow the following structure: " \
@@ -63,10 +63,15 @@ persona_program_manager_eval = "You are an strict evaluation agent that checks i
                     #  "User Benefit: How this feature creates value for the user"
 # For the 'agent_to_evaluate' parameter, refer to the provided solution code's pattern.
 program_manager_eval_criteria = (
-    "The answer must list product features where each feature explicitly uses ALL of these labeled fields in this order: "
-    "Feature Name: <title>, Description: <explanation>, Key Functionality: <capabilities>, User Benefit: <value>. "
-    "Reject any response that uses bullet points or numbered lists without these exact field labels. "
-    "Reject any response that does not define at least one complete feature with all four labeled fields."
+    # "The answer must list product features where each feature explicitly uses ALL of these labeled fields in this order: "
+    # "Feature Name: <title>, Description: <explanation>, Key Functionality: <capabilities>, User Benefit: <value>. "
+    # "Reject any response that uses bullet points or numbered lists without these exact field labels. "
+    # "Reject any response that does not define at least one complete feature with all four labeled fields."
+     "The answer should be product features that follow the following structure: " \
+     "Feature Name: A clear, concise title that identifies the capability\n" \
+     "Description: A brief explanation of what the feature does and its purpose\n" \
+     "Key Functionality: The specific capabilities or actions the feature provides\n" \
+     "User Benefit: How this feature creates value for the user"
 )
 
 program_manager_eval_agent = EvaluationAgent(openai_api_key, persona_program_manager_eval, program_manager_eval_criteria, program_manager_knowledge_agent, 5,
@@ -76,36 +81,57 @@ program_manager_eval_agent = EvaluationAgent(openai_api_key, persona_program_man
 persona_dev_engineer = "You are a Development Engineer, you are responsible for defining the development tasks for a product."
 knowledge_dev_engineer = (
     "Development tasks are defined by identifying what needs to be built to implement each feature. "
-    "You must define tasks for ALL features listed in the input, not just the first one. "
-    "For each feature, define multiple tasks using EXACTLY this labeled format:\n"
-    "Task ID: <unique identifier e.g. T1.1>\n"
-    "Task Title: <brief title of the work>\n"
-    "Related User Story: <which feature or story this implements>\n"
-    "Description: <detailed technical description of what to build>\n"
-    "Acceptance Criteria: <specific conditions that must be met>\n"
-    "Estimated Effort: <time estimate e.g. 3 days>\n"
+    # "You must define tasks for ALL features listed in the input, not just the first one. "
+    # "For each feature, define multiple tasks using EXACTLY this labeled format:\n"
+    # "Task ID: <unique identifier e.g. T1.1>\n"
+    # "Task Title: <brief title of the work>\n"
+    # "Related User Story: <which feature or story this implements>\n"
+    # "Description: <detailed technical description of what to build>\n"
+    # "Acceptance Criteria: <specific conditions that must be met>\n"
+    # "Estimated Effort: <time estimate e.g. 3 days>\n"
+    # "Dependencies: <Any tasks that must be completed first>"
+
+    # "For each feature, define multiple tasks using EXACTLY this labeled format:\n"
+    "For each feature, identify multiple tasks needed, each task should be characterized by an <unique identifier e.g. T1.1>, <brief title of the work>, <which feature or story this implements>,\
+    <detailed technical description of what to build>, <specific conditions that must be met>, <time estimate e.g. 3 days>"
+    # "Task ID: <unique identifier e.g. T1.1>\n"
+    # "Task Title: <brief title of the work>\n"
+    # "Related User Story: <which feature or story this implements>\n"
+    # "Description: <detailed technical description of what to build>\n"
+    # "Acceptance Criteria: <specific conditions that must be met>\n"
+    # "Estimated Effort: <time estimate e.g. 3 days>\n"
+    # "Dependencies: <Any tasks that must be completed first>"
 )
+# knowledge_dev_engineer = "Development tasks are defined by identifying what needs to be built to implement each user story."
 # Instantiate a development_engineer_knowledge_agent using 'persona_dev_engineer' and 'knowledge_dev_engineer'
 # (This is a necessary step before TODO 9. Students should add the instantiation code here.)
 development_engineer_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona_dev_engineer, knowledge_dev_engineer)
 
 # Development Engineer - Evaluation Agent
-persona_dev_engineer_eval = "You are an strict evaluation agent that checks if the answers of other worker agents follow strictly the evaluation criteria."
+persona_dev_engineer_eval = "You are an evaluation agent that checks the answers of other worker agents."
 # TODO: 9 - Instantiate a development_engineer_evaluation_agent using 'persona_dev_engineer_eval' and the evaluation criteria below.
 
 #                      "Dependencies: Any tasks that must be completed first"
 # For the 'agent_to_evaluate' parameter, refer to the provided solution code's pattern.
 
 dev_engineer_eval_criteria = (
-    "The answer must list tasks where each task explicitly uses ALL of these labeled fields in this order: "
-    "Task ID: <unique identifier>, Task Title: <brief title>, Related User Story: <reference>, "
-    "Description: <technical detail>, Acceptance Criteria: <completion requirements>, Estimated Effort: <time estimate>. "
-    "Reject any response that uses plain numbered lists or bullet points without these exact field labels. "
-    "Reject any response that does not define at least one complete task with all six labeled fields."
+    # "The answer must list tasks where each task explicitly uses ALL of these labeled fields in this order, "
+    # "Task ID: <unique identifier>, Task Title: <brief title>, Related User Story: <reference>, "
+    # "Description: <technical detail>, Acceptance Criteria: <completion requirements>, Estimated Effort: <time estimate>. "
+    # "Reject any response that uses plain numbered lists or bullet points without these exact field labels. "
+    # "Reject any response that does not define at least one complete task with all seven labeled fields:"
+    "The answer should be tasks following this exact structure: " \
+    "Task ID: A unique identifier for tracking purposes\n" \
+    "Task Title: Brief description of the specific development work\n" \
+    "Related User Story: Reference to the parent user story\n" \
+    "Description: Detailed explanation of the technical work required\n" \
+    "Acceptance Criteria: Specific requirements that must be met for completion\n" \
+    "Estimated Effort: Time or complexity estimation\n" \
+    "Dependencies: Any tasks that must be completed first"
 )
 
 dev_engineer_eval_agent = EvaluationAgent(openai_api_key, persona_dev_engineer_eval, dev_engineer_eval_criteria, development_engineer_knowledge_agent, 5,
-    required_fields=["Task ID:", "Task Title:", "Related User Story:", "Description:", "Acceptance Criteria:", "Estimated Effort:"])
+    required_fields=["Task ID:", "Task Title:", "Related User Story:", "Description:", "Acceptance Criteria:", "Estimated Effort:", "Dependencies"])
 # Routing Agent
 # TODO: 10 - Instantiate a routing_agent. You will need to define a list of agent dictionaries (routes) for Product Manager, Program Manager, and Development Engineer. Each dictionary should contain 'name', 'description', and 'func' (linking to a support function). Assign this list to the routing_agent's 'agents' attribute.
 routing_agent = RoutingAgent(openai_api_key, {})
@@ -134,15 +160,18 @@ routing_agent.agents = [
 #   3. Have the response evaluated by the corresponding Evaluation Agent.
 #   4. Return the final validated response.
 def product_manager_support_function(query):
-    evaluation = product_manager_eval_agent.evaluate(query)
+    response = product_manager_knowledge_agent.respond(query)
+    evaluation = product_manager_eval_agent.evaluate(response)
     return evaluation["final_response"]
 
 def program_manager_support_function(query):
-    evaluation = program_manager_eval_agent.evaluate(query)
+    response = program_manager_knowledge_agent.respond(query)
+    evaluation = program_manager_eval_agent.evaluate(response)
     return evaluation["final_response"]
 
 def development_engineer_support_function(query):
-    evaluation = dev_engineer_eval_agent.evaluate(query)
+    response = development_engineer_knowledge_agent.respond(query)
+    evaluation = dev_engineer_eval_agent.evaluate(response)
     return evaluation["final_response"]
 
 
